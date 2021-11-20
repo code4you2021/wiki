@@ -11,8 +11,6 @@ public class EbookSnapshot {
 
     private Integer viewCount;
 
-    private Integer voteCount;
-
     private Integer viewIncrease;
 
     private Integer voteIncrease;
@@ -49,14 +47,6 @@ public class EbookSnapshot {
         this.viewCount = viewCount;
     }
 
-    public Integer getVoteCount() {
-        return voteCount;
-    }
-
-    public void setVoteCount(Integer voteCount) {
-        this.voteCount = voteCount;
-    }
-
     public Integer getViewIncrease() {
         return viewIncrease;
     }
@@ -83,7 +73,6 @@ public class EbookSnapshot {
         sb.append(", ebookId=").append(ebookId);
         sb.append(", date=").append(date);
         sb.append(", viewCount=").append(viewCount);
-        sb.append(", voteCount=").append(voteCount);
         sb.append(", viewIncrease=").append(viewIncrease);
         sb.append(", voteIncrease=").append(voteIncrease);
         sb.append("]");

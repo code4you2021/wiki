@@ -372,66 +372,6 @@ public class EbookSnapshotExample {
             return (Criteria) this;
         }
 
-        public Criteria andVoteCountIsNull() {
-            addCriterion("vote_count is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andVoteCountIsNotNull() {
-            addCriterion("vote_count is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andVoteCountEqualTo(Integer value) {
-            addCriterion("vote_count =", value, "voteCount");
-            return (Criteria) this;
-        }
-
-        public Criteria andVoteCountNotEqualTo(Integer value) {
-            addCriterion("vote_count <>", value, "voteCount");
-            return (Criteria) this;
-        }
-
-        public Criteria andVoteCountGreaterThan(Integer value) {
-            addCriterion("vote_count >", value, "voteCount");
-            return (Criteria) this;
-        }
-
-        public Criteria andVoteCountGreaterThanOrEqualTo(Integer value) {
-            addCriterion("vote_count >=", value, "voteCount");
-            return (Criteria) this;
-        }
-
-        public Criteria andVoteCountLessThan(Integer value) {
-            addCriterion("vote_count <", value, "voteCount");
-            return (Criteria) this;
-        }
-
-        public Criteria andVoteCountLessThanOrEqualTo(Integer value) {
-            addCriterion("vote_count <=", value, "voteCount");
-            return (Criteria) this;
-        }
-
-        public Criteria andVoteCountIn(List<Integer> values) {
-            addCriterion("vote_count in", values, "voteCount");
-            return (Criteria) this;
-        }
-
-        public Criteria andVoteCountNotIn(List<Integer> values) {
-            addCriterion("vote_count not in", values, "voteCount");
-            return (Criteria) this;
-        }
-
-        public Criteria andVoteCountBetween(Integer value1, Integer value2) {
-            addCriterion("vote_count between", value1, value2, "voteCount");
-            return (Criteria) this;
-        }
-
-        public Criteria andVoteCountNotBetween(Integer value1, Integer value2) {
-            addCriterion("vote_count not between", value1, value2, "voteCount");
-            return (Criteria) this;
-        }
-
         public Criteria andViewIncreaseIsNull() {
             addCriterion("view_increase is null");
             return (Criteria) this;
