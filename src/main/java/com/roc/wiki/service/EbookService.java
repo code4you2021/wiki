@@ -5,6 +5,7 @@ import com.roc.wiki.domain.EbookExample;
 import com.roc.wiki.mapper.EbookMapper;
 import com.roc.wiki.req.EbookReq;
 import com.roc.wiki.resp.EbookResp;
+import com.roc.wiki.util.CopyUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,12 +37,8 @@ public class EbookService {
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         criteria.andNameLike("%" + name + "%");
         List<Ebook> ebooks = ebookMapper.selectByExample(ebookExample);
-        ArrayList<EbookResp> ebookResps = new ArrayList<>();
-        for (Ebook ebook : ebooks) {
-            EbookResp ebookResp = new EbookResp();
-            BeanUtils.copyProperties(ebook, ebookResp);
-            ebookResps.add(ebookResp);
-        }
-        return ebookResps;
+
+        List<EbookResp> list = CopyUtil.copyList(ebooks, EbookResp.class);
+        return list;
     }
 }
