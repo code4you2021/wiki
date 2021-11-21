@@ -5,6 +5,7 @@ import com.roc.wiki.domain.EbookExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
+
 public interface EbookMapper {
     long countByExample(EbookExample example);
 
