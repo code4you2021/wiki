@@ -1,4 +1,4 @@
-GET http://localhost:8080/ebook;
+GET http://localhost:8088/ebook;
 ###
 
 GET http://localhost:8080/ebookLike?name=vue
@@ -8,5 +8,8 @@ GET http://localhost:8080/ebookLikeReq?name=vue
 ###
 
 GET http://localhost:8080/ebookLikeReqResp?name=vue
+###
+
+GET http://localhost:8088/ebookLike
 
 
