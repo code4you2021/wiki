@@ -2,8 +2,6 @@
   <a-layout>
     <a-layout-sider width="200" style="background: #fff">
       <a-menu
-          v-model:selectedKeys="selectedKeys2"
-          v-model:openKeys="openKeys"
           mode="inline"
           :style="{ height: '100%', borderRight: 0 }"
       >
@@ -56,11 +54,18 @@
 <script>
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
+import axios from 'axios'
 
 export default {
   name: 'Home',
   components: {
     HelloWorld
+  },
+  setup() {
+    console.log('setup')
+    axios.get("http://localhost:8088/ebookLikeReq?name=vue").then((response) => {
+      console.log(response)
+    })
   }
 }
 </script>
