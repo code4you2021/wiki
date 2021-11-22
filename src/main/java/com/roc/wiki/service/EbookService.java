@@ -3,18 +3,12 @@ package com.roc.wiki.service;
 import com.roc.wiki.domain.Ebook;
 import com.roc.wiki.domain.EbookExample;
 import com.roc.wiki.mapper.EbookMapper;
-import com.roc.wiki.req.EbookReq;
 import com.roc.wiki.resp.EbookResp;
 import com.roc.wiki.util.CopyUtil;
-import io.netty.util.internal.ObjectUtil;
-import io.netty.util.internal.StringUtil;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
