@@ -21,20 +21,13 @@ public class EbookService {
         return ebookMapper.selectByExample(null);
     }
 
-    public List<Ebook> listLike(String name) {
+    // 返回类。
+    public List<EbookResp> listLike(String name) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if (!ObjectUtils.isEmpty(name)) {
             criteria.andNameLike("%" + name + "%");
         }
-        return ebookMapper.selectByExample(ebookExample);
-    }
-
-    // 返回类。
-    public List<EbookResp> listLikeResp(String name) {
-        EbookExample ebookExample = new EbookExample();
-        EbookExample.Criteria criteria = ebookExample.createCriteria();
-        criteria.andNameLike("%" + name + "%");
         List<Ebook> ebooks = ebookMapper.selectByExample(ebookExample);
 
         List<EbookResp> list = CopyUtil.copyList(ebooks, EbookResp.class);

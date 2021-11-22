@@ -34,27 +34,10 @@ public class DemoController {
         return resp;
     }
 
-    @GetMapping("/ebookLike")
-    public CommonResp ebookLikeList(String name) {
-        CommonResp<List<Ebook>> resp = new CommonResp<>();
-        List<Ebook> ebookList = ebookService.listLike(name);
-        resp.setContent(ebookList);
-        return resp;
-    }
-
-    // 使用封装的请求
-    @GetMapping("/ebookLikeReq")
-    public CommonResp ebookLikeList(EbookReq req) {
-        CommonResp<List<Ebook>> resp = new CommonResp<>();
-        List<Ebook> ebookList = ebookService.listLike(req.getName());
-        resp.setContent(ebookList);
-        return resp;
-    }
-
-    @GetMapping("/ebookLikeReqResp")
+    @GetMapping("/ebookList")
     public CommonResp ebookLikeListResp(EbookReq req) {
         CommonResp<List<EbookResp>> resp = new CommonResp<>();
-        List<EbookResp> ebookList = ebookService.listLikeResp(req.getName());
+        List<EbookResp> ebookList = ebookService.listLike(req.getName());
         resp.setContent(ebookList);
         return resp;
     }

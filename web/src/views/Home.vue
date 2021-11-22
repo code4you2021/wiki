@@ -106,7 +106,7 @@ export default {
     const ebooks = ref()
     // 在这里写函数会在页面渲染完之后再执行。可能会拿到数据比较晚会出问题。比如操作数据会出错，因为数据还没有拿到。
     onMounted(() => {
-      axios.get("http://localhost:8088/ebook").then((response) => {
+      axios.get("http://localhost:8088/ebookList").then((response) => {
         const data = response.data
         ebooks.value = response.data.content
         console.log(response)
@@ -122,11 +122,21 @@ export default {
         pageSize: 3
       },
       actions: [
-        {type: 'StartOutLined', text: '156'},
-        { type: 'LikeOutlined', text: '156' },
-        { type: 'MessageOutlined', text: '2' },
+        {type: 'StarOutlined', text: '156'},
+        {type: 'LikeOutlined', text: '156' },
+        {type: 'MessageOutlined', text: '2' },
       ]
     }
   }
 }
 </script>
+
+<style scoped lang="less">
+  .ant-avatar {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 8%;
+    margin: 5px 0;
+  }
+</style>
