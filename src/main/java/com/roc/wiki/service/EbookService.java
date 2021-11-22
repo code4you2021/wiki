@@ -6,9 +6,12 @@ import com.roc.wiki.mapper.EbookMapper;
 import com.roc.wiki.req.EbookReq;
 import com.roc.wiki.resp.EbookResp;
 import com.roc.wiki.util.CopyUtil;
+import io.netty.util.internal.ObjectUtil;
+import io.netty.util.internal.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -27,7 +30,9 @@ public class EbookService {
     public List<Ebook> listLike(String name) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
-        criteria.andNameLike("%" + name + "%");
+        if (!ObjectUtils.isEmpty(name)) {
+            criteria.andNameLike("%" + name + "%");
+        }
         return ebookMapper.selectByExample(ebookExample);
     }
 
