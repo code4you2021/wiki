@@ -109,7 +109,6 @@ export default {
       axios.get("/ebookList").then((response) => {
         const data = response.data
         ebooks.value = response.data.content
-        console.log(response)
       });
     })
     return {
