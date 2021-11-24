@@ -1,5 +1,5 @@
 <template>
   <div class="about">
-    <h1>About Roc</h1>
+    <h1>Ebook management</h1>
   </div>
 </template>
