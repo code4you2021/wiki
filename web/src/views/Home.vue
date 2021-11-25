@@ -106,9 +106,14 @@ export default {
     const ebooks = ref()
     // 在这里写函数会在页面渲染完之后再执行。可能会拿到数据比较晚会出问题。比如操作数据会出错，因为数据还没有拿到。
     onMounted(() => {
-      axios.get("/ebook/list").then((response) => {
+      axios.get("/ebook/list", {
+        params: {
+          page: 1,
+          size: 1000
+        }
+      }).then((response) => {
         const data = response.data
-        ebooks.value = response.data.content
+        ebooks.value = response.data.content.list
       });
     })
     return {

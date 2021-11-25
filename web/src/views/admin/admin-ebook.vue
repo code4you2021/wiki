@@ -54,7 +54,7 @@ export default defineComponent({
     const ebooks = ref();
     const pagination = ref({
       current: 1,
-      pageSize: 2,
+      pageSize: 4,
       total: 0
     });
     const loading = ref(false);
@@ -99,13 +99,21 @@ export default defineComponent({
     // 查询数据按钮
     const handleQuery = (params) => {
       loading.value = true;
-      axios.get("/ebook/list", params).then((resp) => {
+      axios.get("/ebook/list", {
+        params: {
+          page: params.page,
+          size: params.size
+        }
+      }).then((resp) => {
         loading.value = false;
         const data = resp.data;
-        ebooks.value = data.content;
+        // data.content 会得到PageResp对象，resp对象的list才是数据
+        ebooks.value = data.content.list;
 
         // 重置分页按钮
         pagination.value.current = params.page;
+        // 这里是后端分页查询时查询数据库的总数据量
+        pagination.value.total = data.content.total;
       });
     };
 
@@ -120,7 +128,10 @@ export default defineComponent({
 
     // 打开页面时查询数据
     onMounted(() => {
-      handleQuery();
+      handleQuery({
+        page: 1,
+        size: pagination.value.pageSize
+      });
     })
 
     return {
