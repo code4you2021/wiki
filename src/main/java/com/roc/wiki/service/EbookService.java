@@ -5,7 +5,9 @@ import com.github.pagehelper.PageInfo;
 import com.roc.wiki.domain.Ebook;
 import com.roc.wiki.domain.EbookExample;
 import com.roc.wiki.mapper.EbookMapper;
+import com.roc.wiki.req.EbookReq;
 import com.roc.wiki.resp.EbookResp;
+import com.roc.wiki.resp.PageResp;
 import com.roc.wiki.util.CopyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,22 +30,24 @@ public class EbookService {
     }
 
     // 返回类。
-    public List<EbookResp> listLike(String name) {
+    public PageResp<EbookResp> listLike(EbookReq req) {
 
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
-        if (!ObjectUtils.isEmpty(name)) {
-            criteria.andNameLike("%" + name + "%");
+        if (!ObjectUtils.isEmpty(req.getName())) {
+            criteria.andNameLike("%" + req.getName() + "%");
         }
         // pageNum 是从1开始 只对第一个遇到的sql起作用，比如只对下面第一个ebookMapper.selectByExample起作用
-        PageHelper.startPage(1, 3);
+        PageHelper.startPage(req.getPage(), req.getSize());
         List<Ebook> ebooks = ebookMapper.selectByExample(ebookExample);
 
         PageInfo<Ebook> info = new PageInfo<>(ebooks);
         log.info("总行数：{}", info.getTotal());
         log.info("总页数：{}", info.getPages());
-
+        PageResp<EbookResp> pageResp = new PageResp();
         List<EbookResp> list = CopyUtil.copyList(ebooks, EbookResp.class);
-        return list;
+        pageResp.setTotal(info.getTotal());
+        pageResp.setList(list);
+        return pageResp;
     }
 }
