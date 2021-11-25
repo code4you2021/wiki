@@ -14,4 +14,7 @@ GET http://localhost:8088/ebookLike
 ###
 
 GET http://localhost:8088/ebookList
+###
 
+GET http://localhost:8088/ebook/list
+###
