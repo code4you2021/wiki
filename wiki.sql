@@ -40,11 +40,11 @@ CREATE TABLE `ebook`  (
 -- ----------------------------
 -- Records of ebook
 -- ----------------------------
-INSERT INTO wiki.ebook (id, name, category1_id, category2_id, description, cover, doc_count, view_count, vote_count) VALUES (1, 'SpringBoot 入门教程', 1, 1, '零基础入门 Java 开发，企业级应用开发最佳首选框架', '/image/springboot.png', 67, 878, 99);
-INSERT INTO wiki.ebook (id, name, category1_id, category2_id, description, cover, doc_count, view_count, vote_count) VALUES (2, 'Vue 入门教程', 2, 2, '零基础入门 Vue 开发，企业级应用开发最佳首选框架', '/image/vue.png', 23, 3245, 433);
-INSERT INTO wiki.ebook (id, name, category1_id, category2_id, description, cover, doc_count, view_count, vote_count) VALUES (3, 'Python 入门教程', 3, 3, '零基础入门 Python 开发，企业级应用开发最佳首选框架', '/image/python.png', 54, 432, 432);
-INSERT INTO wiki.ebook (id, name, category1_id, category2_id, description, cover, doc_count, view_count, vote_count) VALUES (4, 'MySQL 入门教程', 4, 4, '零基础入门 MySQL 开发，企业级应用开发最佳首选框架', '/image/mysql.png', 65, 4235, 427);
-INSERT INTO wiki.ebook (id, name, category1_id, category2_id, description, cover, doc_count, view_count, vote_count) VALUES (5, 'Oracle 入门教程', 5, 5, '零基础入门 Oracle 开发，企业级应用开发最佳首选框架', '/image/oracle.png', 65, 543, 321);
+INSERT INTO ebook (id, name, category1_id, category2_id, description, cover, doc_count, view_count, vote_count) VALUES (1, 'SpringBoot 入门教程', 1, 1, '零基础入门 Java 开发，企业级应用开发最佳首选框架', '/image/springboot.png', 67, 878, 99);
+INSERT INTO ebook (id, name, category1_id, category2_id, description, cover, doc_count, view_count, vote_count) VALUES (2, 'Vue 入门教程', 2, 2, '零基础入门 Vue 开发，企业级应用开发最佳首选框架', '/image/vue.png', 23, 3245, 433);
+INSERT INTO ebook (id, name, category1_id, category2_id, description, cover, doc_count, view_count, vote_count) VALUES (3, 'Python 入门教程', 3, 3, '零基础入门 Python 开发，企业级应用开发最佳首选框架', '/image/python.png', 54, 432, 432);
+INSERT INTO ebook (id, name, category1_id, category2_id, description, cover, doc_count, view_count, vote_count) VALUES (4, 'MySQL 入门教程', 4, 4, '零基础入门 MySQL 开发，企业级应用开发最佳首选框架', '/image/mysql.png', 65, 4235, 427);
+INSERT INTO ebook (id, name, category1_id, category2_id, description, cover, doc_count, view_count, vote_count) VALUES (5, 'Oracle 入门教程', 5, 5, '零基础入门 Oracle 开发，企业级应用开发最佳首选框架', '/image/oracle.png', 65, 543, 321);
 
 drop table if exists `content`;
 create table `content` (
@@ -84,3 +84,18 @@ create table `user` (
 ) engine=innodb default charset=utf8mb4 comment='用户';
 
 insert into `user` (id, `login_name`, `name`, `password`) values (1, 'test', '测试', 'e70e2222a9d67c4f2eae107533359aa4');
+
+-- 电子书快照表
+drop table if exists `ebook_snapshot`;
+create table `ebook_snapshot` (
+                                  `id` bigint auto_increment not null comment 'id',
+                                  `ebook_id` bigint not null default 0 comment '电子书id',
+                                  `date` date not null comment '快照日期',
+                                  `view_count` int not null default 0 comment '阅读数',
+                                  `vote_count` int not null default 0 comment '点赞数',
+                                  `view_increase` int not null default 0 comment '阅读增长',
+                                  `vote_increase` int not null default 0 comment '点赞增长',
+                                  primary key (`id`),
+#                                   一个电子书一天只能有一条记录
+                                  unique key `ebook_id_date_unique` (`ebook_id`, `date`)
+) engine=innodb default charset=utf8mb4 comment='电子书快照表';
