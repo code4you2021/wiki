@@ -23,7 +23,7 @@
         <!--   a-space 空格的组件     -->
         <template v-slot:action="{ text, record }">
           <a-space size="small">
-            <a-button type="primary">
+            <a-button type="primary" @click="edit">
               编辑
             </a-button>
             <a-button type="primary" danger>
@@ -31,11 +31,18 @@
             </a-button>
           </a-space>
         </template>
-
       </a-table>
-
     </a-layout-content>
   </a-layout>
+<!--  这个是弹出来的对话框， 跟在按钮后面即可-->
+  <a-modal
+      v-model:visible="modalVisible"
+      title="Title"
+      :confirm-loading="modalLoading"
+      @ok="handleModalOk"
+  >
+    <p>test</p>
+  </a-modal>
 </template>
 
 <script>
@@ -125,6 +132,19 @@ export default defineComponent({
         size: pagination.pageSize
       });
     };
+    const modalVisible = ref(false)
+    const modalLoading = ref(false)
+    const handleModalOk= () => {
+      modalLoading.value = true;
+      setTimeout(() => {
+        modalVisible.value = false
+        modalLoading.value = false
+      }, 2000)
+    }
+
+    const edit = () => {
+      modalVisible.value = true;
+    }
 
     // 打开页面时查询数据
     onMounted(() => {
@@ -139,7 +159,11 @@ export default defineComponent({
       pagination,
       columns,
       loading,
-      handleTableChange
+      handleTableChange,
+      edit,
+      modalVisible,
+      modalLoading,
+      handleModalOk
     }
   }
 });
