@@ -23,7 +23,8 @@
         <!--   a-space 空格的组件     -->
         <template v-slot:action="{ text, record }">
           <a-space size="small">
-            <a-button type="primary" @click="edit">
+        <!--     这里的record就是对应的一行一行的数据-->
+            <a-button type="primary" @click="edit(record)">
               编辑
             </a-button>
             <a-button type="primary" danger>
@@ -41,7 +42,24 @@
       :confirm-loading="modalLoading"
       @ok="handleModalOk"
   >
-    <p>test</p>
+    <!--  这个ebook是专门给编辑的变量，点击编辑按钮的时候会将一行的数据设置到这个ebook里面，然后这里显示他们 -->
+    <a-form :model="ebook" :label-col="{span : 6}">
+      <a-form-item label="cover">
+        <a-input v-model:value="ebook.cover"/>
+      </a-form-item>
+      <a-form-item label="name">
+        <a-input v-model:value="ebook.name"/>
+      </a-form-item>
+      <a-form-item label="category1">
+        <a-input v-model:value="ebook.category1Id"/>
+      </a-form-item>
+      <a-form-item label="category2">
+        <a-input v-model:value="ebook.category2Id"/>
+      </a-form-item>
+      <a-form-item label="description">
+        <a-input v-model:value="ebook.description" type="text"/>
+      </a-form-item>
+    </a-form>
   </a-modal>
 </template>
 
@@ -132,6 +150,8 @@ export default defineComponent({
         size: pagination.pageSize
       });
     };
+    // 定义了一个响应式的变量，里面的中括号表示变量是对象类型
+    const ebook = ref({})
     const modalVisible = ref(false)
     const modalLoading = ref(false)
     const handleModalOk= () => {
@@ -141,9 +161,10 @@ export default defineComponent({
         modalLoading.value = false
       }, 2000)
     }
-
-    const edit = () => {
+    // 在点击编辑按钮时，将那一行的数据传进edit函数，并将数据赋值给变量ebook
+    const edit = (record) => {
       modalVisible.value = true;
+      ebook.value = record
     }
 
     // 打开页面时查询数据
@@ -163,7 +184,8 @@ export default defineComponent({
       edit,
       modalVisible,
       modalLoading,
-      handleModalOk
+      handleModalOk,
+      ebook
     }
   }
 });
