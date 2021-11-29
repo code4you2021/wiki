@@ -7,10 +7,7 @@ import com.roc.wiki.resp.EbookQueryResp;
 import com.roc.wiki.resp.PageResp;
 import com.roc.wiki.service.EbookService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class EbookController {
@@ -26,11 +23,21 @@ public class EbookController {
         return resp;
     }
 
-    // json方式的提交 使用  @RequestBody 注解才能接收到
+    // PostMapping json方式的提交 使用  @RequestBody 注解才能接收到
     @PostMapping("/ebook/save")
     public CommonResp save(@RequestBody EbookSaveReq req) {
         CommonResp resp = new CommonResp<>();
         ebookService.save(req);
+        return resp;
+    }
+
+    @DeleteMapping("/ebook/delete/{id}")
+    public CommonResp delete(@PathVariable("id") Long id) {
+        CommonResp resp = new CommonResp<>();
+        int delete = ebookService.delete(id);
+        if (delete == 0) {
+            resp.setSuccess(false);
+        }
         return resp;
     }
 }

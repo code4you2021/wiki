@@ -31,11 +31,19 @@
           <a-space size="small">
         <!--     这里的record就是对应的一行一行的数据-->
             <a-button type="primary" @click="edit(record)">
-              编辑
+              edit
             </a-button>
-            <a-button type="primary" danger>
-              删除
-            </a-button>
+            <a-popconfirm
+                title="Are you sure delete this ebook?"
+                ok-text="Yes"
+                cancel-text="No"
+                @confirm="del(record.id)"
+            >
+              <a-button type="primary" danger>
+                delete
+              </a-button>
+            </a-popconfirm>
+
           </a-space>
         </template>
       </a-table>
@@ -196,6 +204,21 @@ export default defineComponent({
       ebook.value = record
     }
 
+    const del = (id) => {
+      axios.delete("/ebook/delete/" + id).then((resp) => {
+        const data = resp.data;
+        // 这里的data就是commonResp
+        if (data.success) {
+          // 重新加载列表
+          handleQuery({
+            // 查询当前页
+            page: pagination.value.current,
+            size: pagination.value.pageSize
+          });
+        }
+      });
+    };
+
     // 打开页面时查询数据
     onMounted(() => {
       handleQuery({
@@ -213,6 +236,7 @@ export default defineComponent({
 
       edit,
       add,
+      del,
 
       modalVisible,
       modalLoading,
