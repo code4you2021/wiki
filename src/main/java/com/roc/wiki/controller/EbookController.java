@@ -7,7 +7,10 @@ import com.roc.wiki.resp.EbookQueryResp;
 import com.roc.wiki.resp.PageResp;
 import com.roc.wiki.service.EbookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 public class EbookController {
@@ -16,7 +19,7 @@ public class EbookController {
     private EbookService ebookService;
 
     @GetMapping("/ebook/list")
-    public CommonResp ebookList(EbookQueryReq req) {
+    public CommonResp ebookList(@Valid EbookQueryReq req) {
         CommonResp<PageResp<EbookQueryResp>> resp = new CommonResp<>();
         PageResp<EbookQueryResp> ebookList = ebookService.listLike(req);
         resp.setContent(ebookList);
@@ -25,7 +28,7 @@ public class EbookController {
 
     // PostMapping json方式的提交 使用  @RequestBody 注解才能接收到
     @PostMapping("/ebook/save")
-    public CommonResp save(@RequestBody EbookSaveReq req) {
+    public CommonResp save(@Valid @RequestBody EbookSaveReq req) {
         CommonResp resp = new CommonResp<>();
         ebookService.save(req);
         return resp;

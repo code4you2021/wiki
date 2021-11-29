@@ -79,7 +79,7 @@
 
 <script>
 import { SmileOutlined, DownOutlined } from '@ant-design/icons-vue';
-
+import { message } from 'ant-design-vue';
 import { defineComponent, onMounted, ref } from 'vue';
 import axios from "axios";
 
@@ -147,12 +147,15 @@ export default defineComponent({
         loading.value = false;
         const data = resp.data;
         // data.content 会得到PageResp对象，resp对象的list才是数据
-        ebooks.value = data.content.list;
-
-        // 重置分页按钮
-        pagination.value.current = params.page;
-        // 这里是后端分页查询时查询数据库的总数据量
-        pagination.value.total = data.content.total;
+        if (data.success) {
+          ebooks.value = data.content.list;
+          // 重置分页按钮
+          pagination.value.current = params.page;
+          // 这里是后端分页查询时查询数据库的总数据量
+          pagination.value.total = data.content.total;
+        } else {
+          message.error(data.message)
+        }
       });
     };
 
@@ -174,19 +177,22 @@ export default defineComponent({
       modalLoading.value = true;
       // 使用异步的方式保存修改的数据
       axios.post("/ebook/save", ebook.value).then((resp) => {
+        // 后端只要有值返回，loading效果去掉
+        modalLoading.value = false
         const data = resp.data;
         // 这里的data就是commonResp
         if (data.success) {
           // 将对话框关闭
           modalVisible.value = false
-          // 拿到值之后将loading效果去掉
-          modalLoading.value = false
           // 重新加载列表
           handleQuery({
             // 查询当前页
             page: pagination.value.current,
             size: pagination.value.pageSize
           });
+        } else {
+          // 保存出错后的提示
+          message.error(data.message)
         }
 
       });

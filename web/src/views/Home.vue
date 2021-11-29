@@ -81,19 +81,8 @@
 import {onMounted, ref} from "vue";
 import HelloWorld from '@/components/HelloWorld.vue'
 import axios from 'axios'
+import { message } from 'ant-design-vue';
 
-const listData = [];
-for (let i = 0; i < 23; i++) {
-  listData.push({
-    href: 'https://www.antdv.com/',
-    title: `ant design vue part ${i}`,
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    description:
-        'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content:
-        'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  });
-}
 
 
 export default {
@@ -109,16 +98,19 @@ export default {
       axios.get("/ebook/list", {
         params: {
           page: 1,
-          size: 1000
+          size: 100
         }
       }).then((response) => {
         const data = response.data
-        ebooks.value = response.data.content.list
+        if (data.success) {
+          ebooks.value = response.data.content.list
+        } else {
+          message.error(data.message)
+        }
       });
     })
     return {
       ebooks,
-      listData,
       pagination: {
         onChange: page => {
           console.log(page)
