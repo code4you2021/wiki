@@ -5,8 +5,9 @@ import com.github.pagehelper.PageInfo;
 import com.roc.wiki.domain.Ebook;
 import com.roc.wiki.domain.EbookExample;
 import com.roc.wiki.mapper.EbookMapper;
-import com.roc.wiki.req.EbookReq;
-import com.roc.wiki.resp.EbookResp;
+import com.roc.wiki.req.EbookQueryReq;
+import com.roc.wiki.req.EbookSaveReq;
+import com.roc.wiki.resp.EbookQueryResp;
 import com.roc.wiki.resp.PageResp;
 import com.roc.wiki.util.CopyUtil;
 import org.slf4j.Logger;
@@ -29,8 +30,8 @@ public class EbookService {
         return ebookMapper.selectByExample(null);
     }
 
-    // 返回类。
-    public PageResp<EbookResp> listLike(EbookReq req) {
+    // 查询Ebook
+    public PageResp<EbookQueryResp> listLike(EbookQueryReq req) {
 
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
@@ -44,10 +45,22 @@ public class EbookService {
         PageInfo<Ebook> info = new PageInfo<>(ebooks);
         log.info("总行数：{}", info.getTotal());
         log.info("总页数：{}", info.getPages());
-        PageResp<EbookResp> pageResp = new PageResp();
-        List<EbookResp> list = CopyUtil.copyList(ebooks, EbookResp.class);
+        PageResp<EbookQueryResp> pageResp = new PageResp();
+        List<EbookQueryResp> list = CopyUtil.copyList(ebooks, EbookQueryResp.class);
         pageResp.setTotal(info.getTotal());
         pageResp.setList(list);
         return pageResp;
+    }
+
+    // 保存ebook
+    // 用于新增和更新
+    public void save(EbookSaveReq req) {
+        Ebook ebook = CopyUtil.copy(req, Ebook.class);
+        if (ObjectUtils.isEmpty(req.getId())) {
+            // 新增
+            ebookMapper.insert(ebook);
+        } else {
+            ebookMapper.updateByPrimaryKey(ebook);
+        }
     }
 }

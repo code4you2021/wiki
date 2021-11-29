@@ -1,9 +1,7 @@
 package com.roc.wiki.controller;
 
 import com.roc.wiki.domain.Ebook;
-import com.roc.wiki.req.EbookReq;
 import com.roc.wiki.resp.CommonResp;
-import com.roc.wiki.resp.EbookResp;
 import com.roc.wiki.service.EbookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

@@ -154,12 +154,28 @@ export default defineComponent({
     const ebook = ref({})
     const modalVisible = ref(false)
     const modalLoading = ref(false)
+    // 点击按钮之后将修改的ebook数据保存
     const handleModalOk= () => {
+      // 点击按钮之后呢显示一个loading的效果
       modalLoading.value = true;
-      setTimeout(() => {
-        modalVisible.value = false
-        modalLoading.value = false
-      }, 2000)
+      // 使用异步的方式保存修改的数据
+      axios.post("/ebook/save", ebook.value).then((resp) => {
+        const data = resp.data;
+        // 这里的data就是commonResp
+        if (data.success) {
+          // 将对话框关闭
+          modalVisible.value = false
+          // 拿到值之后将loading效果去掉
+          modalLoading.value = false
+          // 重新加载列表
+          handleQuery({
+            // 查询当前页
+            page: pagination.value.current,
+            size: pagination.value.pageSize
+          });
+        }
+
+      });
     }
     // 在点击编辑按钮时，将那一行的数据传进edit函数，并将数据赋值给变量ebook
     const edit = (record) => {
