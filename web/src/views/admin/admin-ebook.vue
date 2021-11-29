@@ -9,6 +9,12 @@
         @change="handleTableChange" 点击分页会执行方法
 
   -->
+      <a-form-item >
+        <a-button type="primary" @click="add()" >
+          新增
+        </a-button>
+      </a-form-item>
+
       <a-table :columns="columns"
                :row-key="record => record.id"
                :data-source="ebooks"
@@ -177,6 +183,13 @@ export default defineComponent({
 
       });
     }
+
+    // 新增, 这个新增用到了编辑的组件，相当于弹出个无数据的编辑
+    const add = () => {
+      modalVisible.value = true;
+      ebook.value = {}
+    }
+
     // 在点击编辑按钮时，将那一行的数据传进edit函数，并将数据赋值给变量ebook
     const edit = (record) => {
       modalVisible.value = true;
@@ -197,7 +210,10 @@ export default defineComponent({
       columns,
       loading,
       handleTableChange,
+
       edit,
+      add,
+
       modalVisible,
       modalLoading,
       handleModalOk,

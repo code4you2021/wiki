@@ -10,6 +10,7 @@ import com.roc.wiki.req.EbookSaveReq;
 import com.roc.wiki.resp.EbookQueryResp;
 import com.roc.wiki.resp.PageResp;
 import com.roc.wiki.util.CopyUtil;
+import com.roc.wiki.util.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ public class EbookService {
 
     @Resource
     private EbookMapper ebookMapper;
+    @Resource
+    private SnowFlake snowFlake;
 
     private static final Logger log = LoggerFactory.getLogger(EbookService.class);
 
@@ -58,6 +61,7 @@ public class EbookService {
         Ebook ebook = CopyUtil.copy(req, Ebook.class);
         if (ObjectUtils.isEmpty(req.getId())) {
             // 新增
+            ebook.setId(snowFlake.nextId());
             ebookMapper.insert(ebook);
         } else {
             ebookMapper.updateByPrimaryKey(ebook);
