@@ -5,7 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.roc.wiki.domain.Ebook;
 import com.roc.wiki.domain.EbookExample;
 import com.roc.wiki.mapper.EbookMapper;
-import com.roc.wiki.req.EbookReq;
+import com.roc.wiki.req.EbookQueryReq;
+import com.roc.wiki.req.EbookSaveReq;
 import com.roc.wiki.resp.EbookResp;
 import com.roc.wiki.resp.PageResp;
 import com.roc.wiki.util.CopyUtil;
@@ -29,8 +30,8 @@ public class EbookService {
         return ebookMapper.selectByExample(null);
     }
 
-    // 返回类。
-    public PageResp<EbookResp> listLike(EbookReq req) {
+    // 查询Ebook
+    public PageResp<EbookResp> listLike(EbookQueryReq req) {
 
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
@@ -49,5 +50,17 @@ public class EbookService {
         pageResp.setTotal(info.getTotal());
         pageResp.setList(list);
         return pageResp;
+    }
+
+    // 保存ebook
+    // 用于新增和更新
+    public void save(EbookSaveReq req) {
+        Ebook ebook = CopyUtil.copy(req, Ebook.class);
+        if (ObjectUtils.isEmpty(req.getId())) {
+            // 新增
+            ebookMapper.insert(ebook);
+        } else {
+            ebookMapper.updateByPrimaryKey(ebook);
+        }
     }
 }
