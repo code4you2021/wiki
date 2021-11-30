@@ -1,7 +1,14 @@
 package com.roc.wiki.req;
 
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class EbookSaveReq {
     private Long id;
+
+//    @NotNull(message = "名称不能为null") 可以为空， 不能为null
+    @NotEmpty(message = "名称不能为空")
 
     private String name;
 

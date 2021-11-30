@@ -3,12 +3,32 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-<!--    :row-key="record => record.id" 每一行都要给一个key
-        :pagination="pagination" 定义了一个pagination变量
-        :loading="loading" 用到了loading变量
-        @change="handleTableChange" 点击分页会执行方法
 
-  -->
+      <p>
+        <a-form layout="inline" :model="param">
+          <a-form-item>
+            <a-input v-model:value="param.name" placeholder="名称">
+            </a-input>
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize})">
+              查询
+            </a-button>
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" @click="add()">
+              新增
+            </a-button>
+          </a-form-item>
+        </a-form>
+      </p>
+
+      <!--    :row-key="record => record.id" 每一行都要给一个key
+              :pagination="pagination" 定义了一个pagination变量
+              :loading="loading" 用到了loading变量
+              @change="handleTableChange" 点击分页会执行方法
+
+        -->
       <a-table :columns="columns"
                :row-key="record => record.id"
                :data-source="ebooks"
@@ -25,11 +45,19 @@
           <a-space size="small">
         <!--     这里的record就是对应的一行一行的数据-->
             <a-button type="primary" @click="edit(record)">
-              编辑
+              edit
             </a-button>
-            <a-button type="primary" danger>
-              删除
-            </a-button>
+            <a-popconfirm
+                title="Are you sure delete this ebook?"
+                ok-text="Yes"
+                cancel-text="No"
+                @confirm="del(record.id)"
+            >
+              <a-button type="primary" danger>
+                delete
+              </a-button>
+            </a-popconfirm>
+
           </a-space>
         </template>
       </a-table>
@@ -65,9 +93,10 @@
 
 <script>
 import { SmileOutlined, DownOutlined } from '@ant-design/icons-vue';
-
+import { message } from 'ant-design-vue';
 import { defineComponent, onMounted, ref } from 'vue';
 import axios from "axios";
+import {Tool} from "@/util/tool";
 
 export default defineComponent({
   name: 'AdminEbook',
@@ -82,6 +111,11 @@ export default defineComponent({
       pageSize: 4,
       total: 0
     });
+
+    // 定义查询ebook的名字
+    const param = ref()
+    param.value = {}
+
     const loading = ref(false);
     const columns = [
       {
@@ -121,24 +155,30 @@ export default defineComponent({
         slots: {customRender: 'action'}  // 这里是渲染
       },
     ];
+
+
     // 查询数据按钮
     const handleQuery = (params) => {
       loading.value = true;
       axios.get("/ebook/list", {
         params: {
           page: params.page,
-          size: params.size
+          size: params.size,
+          name: param.value.name
         }
       }).then((resp) => {
         loading.value = false;
         const data = resp.data;
         // data.content 会得到PageResp对象，resp对象的list才是数据
-        ebooks.value = data.content.list;
-
-        // 重置分页按钮
-        pagination.value.current = params.page;
-        // 这里是后端分页查询时查询数据库的总数据量
-        pagination.value.total = data.content.total;
+        if (data.success) {
+          ebooks.value = data.content.list;
+          // 重置分页按钮
+          pagination.value.current = params.page;
+          // 这里是后端分页查询时查询数据库的总数据量
+          pagination.value.total = data.content.total;
+        } else {
+          message.error(data.message)
+        }
       });
     };
 
@@ -160,13 +200,46 @@ export default defineComponent({
       modalLoading.value = true;
       // 使用异步的方式保存修改的数据
       axios.post("/ebook/save", ebook.value).then((resp) => {
+
         const data = resp.data;
         // 这里的data就是commonResp
         if (data.success) {
           // 将对话框关闭
-          modalVisible.value = false
           // 拿到值之后将loading效果去掉
           modalLoading.value = false
+
+          // 重新加载列表
+          handleQuery({
+            // 查询当前页
+            page: pagination.value.current,
+            size: pagination.value.pageSize
+          });
+        } else {
+          // 保存出错后的提示
+          message.error(data.message)
+        }
+
+      });
+    }
+
+    // 新增, 这个新增用到了编辑的组件，相当于弹出个无数据的编辑
+    const add = () => {
+      modalVisible.value = true;
+      ebook.value = {}
+    }
+
+    // 在点击编辑按钮时，将那一行的数据传进edit函数，并将数据赋值给变量ebook
+    const edit = (record) => {
+      modalVisible.value = true;
+      // 这里直接把record传递到ebook，编辑时会直接影响原值，即使没有提交。
+      ebook.value = Tool.copy(record)
+    }
+
+    const del = (id) => {
+      axios.delete("/ebook/delete/" + id).then((resp) => {
+        const data = resp.data;
+        // 这里的data就是commonResp
+        if (data.success) {
           // 重新加载列表
           handleQuery({
             // 查询当前页
@@ -174,14 +247,8 @@ export default defineComponent({
             size: pagination.value.pageSize
           });
         }
-
       });
-    }
-    // 在点击编辑按钮时，将那一行的数据传进edit函数，并将数据赋值给变量ebook
-    const edit = (record) => {
-      modalVisible.value = true;
-      ebook.value = record
-    }
+    };
 
     // 打开页面时查询数据
     onMounted(() => {
@@ -197,7 +264,13 @@ export default defineComponent({
       columns,
       loading,
       handleTableChange,
+
+      param,
       edit,
+      add,
+      del,
+      handleQuery,
+
       modalVisible,
       modalLoading,
       handleModalOk,

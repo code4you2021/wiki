@@ -7,9 +7,10 @@ import com.roc.wiki.domain.EbookExample;
 import com.roc.wiki.mapper.EbookMapper;
 import com.roc.wiki.req.EbookQueryReq;
 import com.roc.wiki.req.EbookSaveReq;
-import com.roc.wiki.resp.EbookResp;
+import com.roc.wiki.resp.EbookQueryResp;
 import com.roc.wiki.resp.PageResp;
 import com.roc.wiki.util.CopyUtil;
+import com.roc.wiki.util.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ public class EbookService {
 
     @Resource
     private EbookMapper ebookMapper;
+    @Resource
+    private SnowFlake snowFlake;
 
     private static final Logger log = LoggerFactory.getLogger(EbookService.class);
 
@@ -31,8 +34,8 @@ public class EbookService {
     }
 
     // 查询Ebook
-    public PageResp<EbookResp> listLike(EbookQueryReq req) {
 
+    public PageResp<EbookQueryResp> listLike(EbookQueryReq req) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if (!ObjectUtils.isEmpty(req.getName())) {
@@ -45,8 +48,8 @@ public class EbookService {
         PageInfo<Ebook> info = new PageInfo<>(ebooks);
         log.info("总行数：{}", info.getTotal());
         log.info("总页数：{}", info.getPages());
-        PageResp<EbookResp> pageResp = new PageResp();
-        List<EbookResp> list = CopyUtil.copyList(ebooks, EbookResp.class);
+        PageResp<EbookQueryResp> pageResp = new PageResp();
+        List<EbookQueryResp> list = CopyUtil.copyList(ebooks, EbookQueryResp.class);
         pageResp.setTotal(info.getTotal());
         pageResp.setList(list);
         return pageResp;
@@ -58,9 +61,15 @@ public class EbookService {
         Ebook ebook = CopyUtil.copy(req, Ebook.class);
         if (ObjectUtils.isEmpty(req.getId())) {
             // 新增
+            ebook.setId(snowFlake.nextId());
             ebookMapper.insert(ebook);
         } else {
             ebookMapper.updateByPrimaryKey(ebook);
         }
     }
+
+    public int delete(Long id) {
+        return ebookMapper.deleteByPrimaryKey(id);
+    }
+
 }
