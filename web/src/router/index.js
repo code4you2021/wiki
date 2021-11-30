@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import About from '../views/About'
 import AdminEbook from '../views/admin/admin-ebook'
+import AdminCategory from '../views/admin/category-ebook'
 const routes = [
   {
     path: '/',
@@ -17,6 +18,11 @@ const routes = [
     path: '/admin/ebook',
     name: 'AdminEbook',
     component: AdminEbook
+  },
+  {
+    path: '/admin/category',
+    name: 'AdminCategory',
+    component: AdminCategory
   }
 ]
 
