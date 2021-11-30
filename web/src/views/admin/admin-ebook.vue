@@ -3,18 +3,32 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-<!--    :row-key="record => record.id" 每一行都要给一个key
-        :pagination="pagination" 定义了一个pagination变量
-        :loading="loading" 用到了loading变量
-        @change="handleTableChange" 点击分页会执行方法
 
-  -->
-      <a-form-item >
-        <a-button type="primary" @click="add()" >
-          新增
-        </a-button>
-      </a-form-item>
+      <p>
+        <a-form layout="inline" :model="param">
+          <a-form-item>
+            <a-input v-model:value="param.name" placeholder="名称">
+            </a-input>
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize})">
+              查询
+            </a-button>
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" @click="add()">
+              新增
+            </a-button>
+          </a-form-item>
+        </a-form>
+      </p>
 
+      <!--    :row-key="record => record.id" 每一行都要给一个key
+              :pagination="pagination" 定义了一个pagination变量
+              :loading="loading" 用到了loading变量
+              @change="handleTableChange" 点击分页会执行方法
+
+        -->
       <a-table :columns="columns"
                :row-key="record => record.id"
                :data-source="ebooks"
@@ -96,6 +110,11 @@ export default defineComponent({
       pageSize: 4,
       total: 0
     });
+
+    // 定义查询ebook的名字
+    const param = ref()
+    param.value = {}
+
     const loading = ref(false);
     const columns = [
       {
@@ -135,13 +154,16 @@ export default defineComponent({
         slots: {customRender: 'action'}  // 这里是渲染
       },
     ];
+
+
     // 查询数据按钮
     const handleQuery = (params) => {
       loading.value = true;
       axios.get("/ebook/list", {
         params: {
           page: params.page,
-          size: params.size
+          size: params.size,
+          name: param.value.name
         }
       }).then((resp) => {
         loading.value = false;
@@ -240,9 +262,11 @@ export default defineComponent({
       loading,
       handleTableChange,
 
+      param,
       edit,
       add,
       del,
+      handleQuery,
 
       modalVisible,
       modalLoading,
