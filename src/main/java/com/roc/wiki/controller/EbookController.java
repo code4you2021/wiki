@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/ebook")
 public class EbookController {
 
     @Autowired
     private EbookService ebookService;
 
-    @GetMapping("/ebook/list")
+    @GetMapping("/list")
     public CommonResp ebookList(@Valid EbookQueryReq req) {
         CommonResp<PageResp<EbookQueryResp>> resp = new CommonResp<>();
         PageResp<EbookQueryResp> ebookList = ebookService.listLike(req);
@@ -27,14 +28,14 @@ public class EbookController {
     }
 
     // PostMapping json方式的提交 使用  @RequestBody 注解才能接收到
-    @PostMapping("/ebook/save")
+    @PostMapping("/save")
     public CommonResp save(@Valid @RequestBody EbookSaveReq req) {
         CommonResp resp = new CommonResp<>();
         ebookService.save(req);
         return resp;
     }
 
-    @DeleteMapping("/ebook/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public CommonResp delete(@PathVariable("id") Long id) {
         CommonResp resp = new CommonResp<>();
         int delete = ebookService.delete(id);
