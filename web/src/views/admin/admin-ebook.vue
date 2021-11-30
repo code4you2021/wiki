@@ -96,6 +96,7 @@ import { SmileOutlined, DownOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import { defineComponent, onMounted, ref } from 'vue';
 import axios from "axios";
+import {Tool} from "@/util/tool";
 
 export default defineComponent({
   name: 'AdminEbook',
@@ -229,7 +230,8 @@ export default defineComponent({
     // 在点击编辑按钮时，将那一行的数据传进edit函数，并将数据赋值给变量ebook
     const edit = (record) => {
       modalVisible.value = true;
-      ebook.value = record
+      // 这里直接把record传递到ebook，编辑时会直接影响原值，即使没有提交。
+      ebook.value = Tool.copy(record)
     }
 
     const del = (id) => {
