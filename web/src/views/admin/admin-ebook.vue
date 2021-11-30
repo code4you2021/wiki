@@ -217,6 +217,7 @@ export default defineComponent({
         } else {
           // 保存出错后的提示
           message.error(data.message)
+          modalLoading.value = false
         }
 
       });
