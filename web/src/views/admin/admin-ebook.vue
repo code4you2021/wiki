@@ -205,6 +205,7 @@ export default defineComponent({
         // 这里的data就是commonResp
         if (data.success) {
           // 将对话框关闭
+          modalVisible.value = false;
           // 拿到值之后将loading效果去掉
           modalLoading.value = false
 
