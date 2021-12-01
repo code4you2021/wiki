@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,6 +35,16 @@ public class CategoryService {
     }
 
     // 查询Category
+    public List<CategoryQueryResp> all() {
+        CategoryExample categoryExample = new CategoryExample();
+        categoryExample.setOrderByClause("sort asc");
+        // 查处数据
+        List<Category> categories = categoryMapper.selectByExample(categoryExample);
+        // 复制到返回对象里面
+        List<CategoryQueryResp> list = CopyUtil.copyList(categories, CategoryQueryResp.class);
+        return list;
+    }
+
 
     public PageResp<CategoryQueryResp> listLike(CategoryQueryReq req) {
         CategoryExample categoryExample = new CategoryExample();

@@ -5,13 +5,11 @@
     >
 
       <p>
-        <a-form layout="inline" :model="param">
+        <a-form layout="inline">
           <a-form-item>
-            <a-input v-model:value="param.name" placeholder="名称">
-            </a-input>
           </a-form-item>
           <a-form-item>
-            <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize})">
+            <a-button type="primary" @click="handleQuery()">
               查询
             </a-button>
           </a-form-item>
@@ -31,15 +29,12 @@
         -->
       <a-table :columns="columns"
                :row-key="record => record.id"
-               :data-source="categorys"
-               :pagination="pagination"
+               :data-source="tree_data"
+               :pagination="false"
                :loading="loading"
-               @change="handleTableChange"
+
       >
-        <!--   渲染封面, 对应setup里面的      -->
-        <template #cover="{text: cover}">
-          <img v-if="cover" :src="cover" alt="avator" style="width: 50px; height: 50px">
-        </template>
+
         <!--   a-space 空格的组件     -->
         <template v-slot:action="{ text, record }">
           <a-space size="small">
@@ -75,9 +70,14 @@
       <a-form-item label="name">
         <a-input v-model:value="category.name"/>
       </a-form-item>
+
       <a-form-item label="parent">
-        <a-input v-model:value="category.parent"/>
+        <a-select v-model:value="category.parent" ref="select">
+          <a-select-option value="0">none</a-select-option>
+          <a-select-option v-for="c in tree_data" :key="c.id" value="c.id" :disabled="category.id===c.id">{{c.name}}</a-select-option>
+        </a-select>
       </a-form-item>
+
       <a-form-item label="sort">
         <a-input v-model:value="category.sort"/>
       </a-form-item>
@@ -106,10 +106,6 @@ export default defineComponent({
       total: 0
     });
 
-    // 定义查询category的名字
-    const param = ref()
-    param.value = {}
-
     const loading = ref(false);
     const columns = [
       {
@@ -134,39 +130,29 @@ export default defineComponent({
     ];
 
 
+
     // 查询数据按钮
-    const handleQuery = (params) => {
+    const tree_data = ref()
+
+    const handleQuery = () => {
       loading.value = true;
-      axios.get("/category/list", {
-        params: {
-          page: params.page,
-          size: params.size,
-          name: param.value.name
-        }
-      }).then((resp) => {
+      axios.get("/category/all").then((resp) => {
         loading.value = false;
         const data = resp.data;
         // data.content 会得到PageResp对象，resp对象的list才是数据
         if (data.success) {
-          categorys.value = data.content.list;
+          categorys.value = data.content;
           // 重置分页按钮
-          pagination.value.current = params.page;
-          // 这里是后端分页查询时查询数据库的总数据量
-          pagination.value.total = data.content.total;
+          tree_data.value = []
+          tree_data.value = Tool.array2Tree(categorys.value, 0)
+          console.log("tree structe", tree_data)
         } else {
           message.error(data.message)
         }
       });
     };
 
-    // 点击表格页码的时候触发
-    const handleTableChange = (pagination) => {
-      console.log("自带分页参数:" + pagination);
-      handleQuery({
-        page: pagination.current,
-        size: pagination.pageSize
-      });
-    };
+
     // 定义了一个响应式的变量，里面的中括号表示变量是对象类型
     const category = ref({})
     const modalVisible = ref(false)
@@ -187,11 +173,7 @@ export default defineComponent({
           modalLoading.value = false
 
           // 重新加载列表
-          handleQuery({
-            // 查询当前页
-            page: pagination.value.current,
-            size: pagination.value.pageSize
-          });
+          handleQuery();
         } else {
           // 保存出错后的提示
           message.error(data.message)
@@ -220,21 +202,14 @@ export default defineComponent({
         // 这里的data就是commonResp
         if (data.success) {
           // 重新加载列表
-          handleQuery({
-            // 查询当前页
-            page: pagination.value.current,
-            size: pagination.value.pageSize
-          });
+          handleQuery();
         }
       });
     };
 
     // 打开页面时查询数据
     onMounted(() => {
-      handleQuery({
-        page: 1,
-        size: pagination.value.pageSize
-      });
+      handleQuery();
     })
 
     return {
@@ -242,9 +217,8 @@ export default defineComponent({
       pagination,
       columns,
       loading,
-      handleTableChange,
+      tree_data,
 
-      param,
       edit,
       add,
       del,
