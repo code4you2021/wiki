@@ -70,7 +70,7 @@
       :confirm-loading="modalLoading"
       @ok="handleModalOk"
   >
-    <!--  这个ebook是专门给编辑的变量，点击编辑按钮的时候会将一行的数据设置到这个ebook里面，然后这里显示他们 -->
+    <!--  新增和编辑的弹出框 -->
     <a-form :model="ebook" :label-col="{span : 6}">
       <a-form-item label="cover">
         <a-input v-model:value="ebook.cover"/>
@@ -78,12 +78,12 @@
       <a-form-item label="name">
         <a-input v-model:value="ebook.name"/>
       </a-form-item>
-      <a-form-item label="category1">
-        <a-input v-model:value="ebook.category1Id"/>
+      <a-form-item label="分类">
+        <a-cascader v-model:value="categoryIds"
+                    :field-names="{label:'name', value:'id', children:'children'}"
+                    :options="tree_data"/>
       </a-form-item>
-      <a-form-item label="category2">
-        <a-input v-model:value="ebook.category2Id"/>
-      </a-form-item>
+      <!--   name: 显示的值， value：实际的值 -->
       <a-form-item label="description">
         <a-input v-model:value="ebook.description" type="text"/>
       </a-form-item>
@@ -190,14 +190,38 @@ export default defineComponent({
         size: pagination.pageSize
       });
     };
-    // 定义了一个响应式的变量，里面的中括号表示变量是对象类型
+    // 【100， 101】对应父分类和分类，比如对应前端开发和vue
+    const categoryIds = ref()
     const ebook = ref({})
     const modalVisible = ref(false)
     const modalLoading = ref(false)
+
+    const tree_data = ref()
+    let categorys
+
+    const handleQueryCategory = () => {
+      loading.value = true;
+      axios.get("/category/all").then((resp) => {
+        loading.value = false;
+        const data = resp.data;
+        // data.content 会得到PageResp对象，resp对象的list才是数据
+        if (data.success) {
+          categorys = data.content;
+
+          tree_data.value = []
+          tree_data.value = Tool.array2Tree(categorys, 0)
+          console.log("tree structe", tree_data)
+        } else {
+          message.error(data.message)
+        }
+      });
+    };
     // 点击按钮之后将修改的ebook数据保存
     const handleModalOk= () => {
       // 点击按钮之后呢显示一个loading的效果
       modalLoading.value = true;
+      ebook.value.category1Id = categoryIds.value[0]
+      ebook.value.category2Id = categoryIds.value[1]
       // 使用异步的方式保存修改的数据
       axios.post("/ebook/save", ebook.value).then((resp) => {
 
@@ -235,6 +259,7 @@ export default defineComponent({
       modalVisible.value = true;
       // 这里直接把record传递到ebook，编辑时会直接影响原值，即使没有提交。
       ebook.value = Tool.copy(record)
+      categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
     }
 
     const del = (id) => {
@@ -258,6 +283,7 @@ export default defineComponent({
         page: 1,
         size: pagination.value.pageSize
       });
+      handleQueryCategory()
     })
 
     return {
@@ -266,6 +292,8 @@ export default defineComponent({
       columns,
       loading,
       handleTableChange,
+      categoryIds,
+      tree_data,
 
       param,
       edit,
