@@ -58,25 +58,27 @@
       </a-table>
     </a-layout-content>
   </a-layout>
-<!--  这个是弹出来的对话框， 跟在按钮后面即可-->
+<!--  弹出的新增和修改框-->
   <a-modal
       v-model:visible="modalVisible"
       title="Title"
       :confirm-loading="modalLoading"
       @ok="handleModalOk"
   >
-    <!--  这个category是专门给编辑的变量，点击编辑按钮的时候会将一行的数据设置到这个category里面，然后这里显示他们 -->
-    <a-form :model="category" :label-col="{span : 6}">
+    <a-form :model="category" :label-col="{span : 6}" :wrapper-col="{ span: 18 }">
       <a-form-item label="name">
         <a-input v-model:value="category.name"/>
       </a-form-item>
 
       <a-form-item label="parent">
-        <a-select v-model:value="category.parent" ref="select">
+        <a-select
+            v-model:value="category.parent"
+            ref="select">
           <a-select-option value="0">none</a-select-option>
-          <a-select-option v-for="c in tree_data" :key="c.id" value="c.id" :disabled="category.id===c.id">{{c.name}}</a-select-option>
+          <a-select-option v-for="c in tree_data" :key="c.id" :value="c.id" :disabled="category.id===c.id">{{ c.name }}</a-select-option>
         </a-select>
       </a-form-item>
+
 
       <a-form-item label="sort">
         <a-input v-model:value="category.sort"/>
@@ -213,7 +215,6 @@ export default defineComponent({
     })
 
     return {
-      categorys,
       pagination,
       columns,
       loading,
