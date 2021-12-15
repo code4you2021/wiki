@@ -12,7 +12,7 @@
                 subnav 1
               </span>
           </template>
-          <a-menu-item key="1">option11111</a-menu-item>
+          <a-menu-item key="1">option1</a-menu-item>
           <a-menu-item key="2">option2</a-menu-item>
           <a-menu-item key="3">option3</a-menu-item>
           <a-menu-item key="4">option4</a-menu-item>
